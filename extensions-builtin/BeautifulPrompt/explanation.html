@@ -1,0 +1,49 @@
+<details id="beautifulprompt_explanation">
+    <summary><b>Information</b></summary>
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Model</td>
+            <td>The selected model. Local models, API, hugging face models can be used. Selecting API or None will free up GPU memory.</td>
+        </tr>
+        <tr>
+            <td>API Token</td>
+            <td>Authentication token when using the API, can be left empty when not using the api.</td>
+        </tr>
+        <tr>
+            <td>Top K</td>
+            <td>When appending a word to the prompt, pick out of K most likely candidates.</td>
+        </tr>
+        <tr>
+            <td>Top P</td>
+            <td>Only the smallest set of most probable tokens with probabilities that add up to top_p or higher are kept for generation.</td>
+        </tr>
+        <tr>
+            <td>Temperature</td>
+            <td>When appending a word to the prompt, the greater temperature is, the more chance to pick an unlikely candidate.</td>
+        </tr>
+        <tr>
+            <td>Repetition penalty</td>
+            <td>The greater the value is, the less likely repeated tearms are to appear in prompt. 1.0 means no penalty.</td>
+        </tr>
+        <tr>
+            <td>Max length</td>
+            <td>The total maximum length instruction, raw prompt and generated prompt in tokens.</td>
+        </tr>
+        <tr>
+            <td>Num prompts</td>
+            <td>The number of prompts to generate.</td>
+        </tr>
+        <tr>
+            <td>Negative prompt</td>
+            <td>Also generate a pre-defined negative prompt.</td>
+        </tr>
+        </tbody>
+    </table>
+</details>
