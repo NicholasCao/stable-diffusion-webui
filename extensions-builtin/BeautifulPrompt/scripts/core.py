@@ -1,6 +1,7 @@
 import html
 import os
 import time
+import json
 
 import requests
 import torch
@@ -48,6 +49,12 @@ def model_list():
     for dirname in os.listdir(models_dir):
         if os.path.isdir(os.path.join(models_dir, dirname)):
             available_models.append(dirname)
+    
+    for name in [x.strip() for x in shared.opts.beautifulprompt_names.split(",")]:
+        if not name:
+            continue
+
+        available_models.append(name)
     
     return available_models
 
@@ -134,7 +141,7 @@ def model_selection_changed(model_name):
 
         devices.torch_gc()
 
-def request_api(api_url, api_token, raw_prompt, max_length, temperature, repetition_penalty, top_k, top_p, num_return_sequences):
+def request_api(api_url, api_token, model_name, raw_prompt, max_length, temperature, repetition_penalty, top_k, top_p, num_return_sequences):
     data = {
         'raw_prompt': raw_prompt,
         'max_length': max_length,
@@ -144,10 +151,12 @@ def request_api(api_url, api_token, raw_prompt, max_length, temperature, repetit
         'top_p': top_p,
         'num_prompts': num_return_sequences
     }
+    if model_name is not None:
+        data['model_name'] = model_name
+
     if api_token is not None:
         headers = {'Authorization': api_token}
-
-    response = requests.post(api_url, json=data, headers=headers)
-    response = response.json()
-    
-    return response['prompts']
+        response = requests.post(api_url, json=data, headers=headers)
+    else:
+        response = requests.post(api_url, json=data)
+    return json.loads(response.text)['prompts']

@@ -28,23 +28,17 @@ def list_available_models():
     if hasattr(shared.cmd_opts, 'just_ui') and shared.cmd_opts.just_ui:
         req_url = '/'.join([shared.cmd_opts.server_path, 'beautifulprompt/model_list'])
         try:
-            data = requests.get(req_url)
-            if data.status_code == 200:
-                available_models = json.loads(data.text)['model_list']
+            response = requests.get(req_url)
+            if response.status_code == 200:
+                available_models = json.loads(response.text)['model_list']
             else:
-                print(data.status_code, data.text)
+                print(response.status_code, response.text)
         except Exception as e:
             print(e)
         
     else:
         available_models = core.model_list()
-        for name in [x.strip() for x in shared.opts.beautifulprompt_names.split(",")]:
-            if not name:
-                continue
-
-            available_models.append(name)
     available_models.append('API')
-    print(available_models)
 
 
 def generate(id_task, model_name, api_url, api_token, raw_prompt, max_length, temperature, repetition_penalty, top_k, top_p, num_return_sequences):
@@ -53,12 +47,12 @@ def generate(id_task, model_name, api_url, api_token, raw_prompt, max_length, te
     if model_name == "API":
         # use custom api
         shared.state.textinfo = "Generating prompts via api..."
-        prompts = core.request_api(api_url, api_token, raw_prompt, max_length, temperature, repetition_penalty, top_k, top_p, num_return_sequences)
+        prompts = core.request_api(api_url, api_token, None, raw_prompt, max_length, temperature, repetition_penalty, top_k, top_p, num_return_sequences)
     else:
         if hasattr(shared.cmd_opts, 'just_ui') and shared.cmd_opts.just_ui:
             shared.state.textinfo = "Generating prompts via api..."
             req_url = '/'.join([shared.cmd_opts.server_path, 'beautifulprompt/generate_prompt'])
-            prompts = core.request_api(req_url, None, raw_prompt, max_length, temperature, repetition_penalty, top_k, top_p, num_return_sequences)
+            prompts = core.request_api(req_url, None, model_name, raw_prompt, max_length, temperature, repetition_penalty, top_k, top_p, num_return_sequences)
         
         else:
             prompts = core.generate_prompts(model_name, raw_prompt, max_length, temperature, repetition_penalty, top_k, top_p, num_return_sequences)
@@ -131,7 +125,7 @@ def add_tab():
 
                 with gr.Row():
                     temperature = gr.Slider(label="Temperature", elem_id="beautifulprompt_temperature", value=1.0, minimum=0.05, maximum=3, step=0.05)
-                    repetition_penalty = gr.Slider(label="Repetition penalty", elem_id="beautifulprompt_repetition_penalty", value=1.1, minimum=1, maximum=2, step=0.05)
+                    repetition_penalty = gr.Slider(label="Repetition penalty", elem_id="beautifulprompt_repetition_penalty", value=1.2, minimum=1, maximum=2, step=0.05)
 
                 with FormRow():
                     max_length = gr.Slider(label="Max length", elem_id="beautifulprompt_max_length", value=384, minimum=1, maximum=400, step=1)
